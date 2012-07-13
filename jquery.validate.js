@@ -223,7 +223,7 @@ $.extend($.validator, {
 			// hide error label and remove error class on focus if enabled
 			if ( this.settings.focusCleanup && !this.blockFocusCleanup ) {
 				if ( this.settings.unhighlight ) {
-					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass, defaults.unhighlight );
+					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass, this._defaults.unhighlight );
 				}
 				this.addWrapper(this.errorsFor(element)).hide();
 			}
@@ -265,6 +265,8 @@ $.extend($.validator, {
 			}
 		}
 	},
+	
+	_defaults: this.defaults, // keep a copy just in case.
 
 	// http://docs.jquery.com/Plugins/Validation/Validator/setDefaults
 	setDefaults: function(settings) {
@@ -644,7 +646,7 @@ $.extend($.validator, {
 			for ( i = 0; this.errorList[i]; i++ ) {
 				var error = this.errorList[i];
 				if ( this.settings.highlight ) {
-					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass, defaults.highlight );
+					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass, this._defaults.highlight );
 				}
 				this.showLabel( error.element, error.message );
 			}
@@ -658,7 +660,7 @@ $.extend($.validator, {
 			}
 			if (this.settings.unhighlight) {
 				for ( i = 0, elements = this.validElements(); elements[i]; i++ ) {
-					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass, defaults.unhighlight );
+					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass, this._defaults.unhighlight );
 				}
 			}
 			this.toHide = this.toHide.not( this.toShow );
