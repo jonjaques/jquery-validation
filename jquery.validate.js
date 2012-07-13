@@ -223,7 +223,7 @@ $.extend($.validator, {
 			// hide error label and remove error class on focus if enabled
 			if ( this.settings.focusCleanup && !this.blockFocusCleanup ) {
 				if ( this.settings.unhighlight ) {
-					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass );
+					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass, defaults.unhighlight );
 				}
 				this.addWrapper(this.errorsFor(element)).hide();
 			}
@@ -250,14 +250,14 @@ $.extend($.validator, {
 				this.element(element.parentNode);
 			}
 		},
-		highlight: function(element, errorClass, validClass) {
+		highlight: function(element, errorClass, validClass, _highlight) {
 			if (element.type === 'radio') {
 				this.findByName(element.name).addClass(errorClass).removeClass(validClass);
 			} else {
 				$(element).addClass(errorClass).removeClass(validClass);
 			}
 		},
-		unhighlight: function(element, errorClass, validClass) {
+		unhighlight: function(element, errorClass, validClass, _highlight) {
 			if (element.type === 'radio') {
 				this.findByName(element.name).removeClass(errorClass).addClass(validClass);
 			} else {
@@ -644,7 +644,7 @@ $.extend($.validator, {
 			for ( i = 0; this.errorList[i]; i++ ) {
 				var error = this.errorList[i];
 				if ( this.settings.highlight ) {
-					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass );
+					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass, defaults.highlight );
 				}
 				this.showLabel( error.element, error.message );
 			}
@@ -658,7 +658,7 @@ $.extend($.validator, {
 			}
 			if (this.settings.unhighlight) {
 				for ( i = 0, elements = this.validElements(); elements[i]; i++ ) {
-					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass );
+					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass, defaults.unhighlight );
 				}
 			}
 			this.toHide = this.toHide.not( this.toShow );
