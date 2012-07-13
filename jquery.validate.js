@@ -177,6 +177,7 @@ $.extend($.expr[":"], {
 
 // constructor for validator
 $.validator = function( options, form ) {
+	this._defaults = _defaults;
 	this.settings = $.extend( true, {}, $.validator.defaults, options );
 	this.currentForm = form;
 	this.init();
@@ -202,71 +203,71 @@ $.validator.format = function(source, params) {
 	return source;
 };
 
-$.extend($.validator, {
-
-	defaults: {
-		messages: {},
-		groups: {},
-		rules: {},
-		errorClass: "error",
-		validClass: "valid",
-		errorElement: "label",
-		focusInvalid: true,
-		errorContainer: $( [] ),
-		errorLabelContainer: $( [] ),
-		onsubmit: true,
-		ignore: ":hidden",
-		ignoreTitle: false,
-		onfocusin: function(element, event) {
-			this.lastActive = element;
-
-			// hide error label and remove error class on focus if enabled
-			if ( this.settings.focusCleanup && !this.blockFocusCleanup ) {
-				if ( this.settings.unhighlight ) {
-					this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass, $.validator._defaults.unhighlight );
-				}
-				this.addWrapper(this.errorsFor(element)).hide();
+var _defaults = {
+	messages: {},
+	groups: {},
+	rules: {},
+	errorClass: "error",
+	validClass: "valid",
+	errorElement: "label",
+	focusInvalid: true,
+	errorContainer: $( [] ),
+	errorLabelContainer: $( [] ),
+	onsubmit: true,
+	ignore: ":hidden",
+	ignoreTitle: false,
+	onfocusin: function(element, event) {
+		this.lastActive = element;
+	
+		// hide error label and remove error class on focus if enabled
+		if ( this.settings.focusCleanup && !this.blockFocusCleanup ) {
+			if ( this.settings.unhighlight ) {
+				this.settings.unhighlight.call( this, element, this.settings.errorClass, this.settings.validClass, this._defaults.unhighlight );
 			}
-		},
-		onfocusout: function(element, event) {
-			if ( !this.checkable(element) && (element.name in this.submitted || !this.optional(element)) ) {
-				this.element(element);
-			}
-		},
-		onkeyup: function(element, event) {
-			if ( event.which == 9 && this.elementValue(element) === '' ) {
-				return;
-			} else if ( element.name in this.submitted || element === this.lastActive ) {
-				this.element(element);
-			}
-		},
-		onclick: function(element, event) {
-			// click on selects, radiobuttons and checkboxes
-			if ( element.name in this.submitted ) {
-				this.element(element);
-			}
-			// or option elements, check parent select in that case
-			else if (element.parentNode.name in this.submitted) {
-				this.element(element.parentNode);
-			}
-		},
-		highlight: function(element, errorClass, validClass, _highlight) {
-			if (element.type === 'radio') {
-				this.findByName(element.name).addClass(errorClass).removeClass(validClass);
-			} else {
-				$(element).addClass(errorClass).removeClass(validClass);
-			}
-		},
-		unhighlight: function(element, errorClass, validClass, _highlight) {
-			if (element.type === 'radio') {
-				this.findByName(element.name).removeClass(errorClass).addClass(validClass);
-			} else {
-				$(element).removeClass(errorClass).addClass(validClass);
-			}
+			this.addWrapper(this.errorsFor(element)).hide();
 		}
 	},
-	
-	_defaults: $.validator.defaults, // keep a copy just in case.
+	onfocusout: function(element, event) {
+		if ( !this.checkable(element) && (element.name in this.submitted || !this.optional(element)) ) {
+			this.element(element);
+		}
+	},
+	onkeyup: function(element, event) {
+		if ( event.which == 9 && this.elementValue(element) === '' ) {
+			return;
+		} else if ( element.name in this.submitted || element === this.lastActive ) {
+			this.element(element);
+		}
+	},
+	onclick: function(element, event) {
+		// click on selects, radiobuttons and checkboxes
+		if ( element.name in this.submitted ) {
+			this.element(element);
+		}
+		// or option elements, check parent select in that case
+		else if (element.parentNode.name in this.submitted) {
+			this.element(element.parentNode);
+		}
+	},
+	highlight: function(element, errorClass, validClass, _highlight) {
+		if (element.type === 'radio') {
+			this.findByName(element.name).addClass(errorClass).removeClass(validClass);
+		} else {
+			$(element).addClass(errorClass).removeClass(validClass);
+		}
+	},
+	unhighlight: function(element, errorClass, validClass, _highlight) {
+		if (element.type === 'radio') {
+			this.findByName(element.name).removeClass(errorClass).addClass(validClass);
+		} else {
+			$(element).removeClass(errorClass).addClass(validClass);
+		}
+	}
+};
+
+$.extend($.validator, {
+
+	defaults: $.extend({}, _defaults), // keep a copy just in case.
 
 	// http://docs.jquery.com/Plugins/Validation/Validator/setDefaults
 	setDefaults: function(settings) {
@@ -646,7 +647,7 @@ $.extend($.validator, {
 			for ( i = 0; this.errorList[i]; i++ ) {
 				var error = this.errorList[i];
 				if ( this.settings.highlight ) {
-					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass, $.validator._defaults.highlight );
+					this.settings.highlight.call( this, error.element, this.settings.errorClass, this.settings.validClass, this._defaults.highlight );
 				}
 				this.showLabel( error.element, error.message );
 			}
@@ -660,7 +661,7 @@ $.extend($.validator, {
 			}
 			if (this.settings.unhighlight) {
 				for ( i = 0, elements = this.validElements(); elements[i]; i++ ) {
-					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass, $.validator._defaults.unhighlight );
+					this.settings.unhighlight.call( this, elements[i], this.settings.errorClass, this.settings.validClass, this._defaults.unhighlight );
 				}
 			}
 			this.toHide = this.toHide.not( this.toShow );
